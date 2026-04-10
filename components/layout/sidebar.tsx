@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, LogOut, Package, PlusSquare, User2, Users, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, LayoutDashboard, LogOut, Package, PlusSquare, User2, Users, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -49,10 +49,10 @@ export function Sidebar({
     <>
       <div className="border-b border-[var(--border)] px-4 py-5">
         <div className="flex items-center gap-3">
-          <div className="h-3 w-3 rounded-full bg-[var(--accent)] shadow-[0_0_18px_rgba(79,124,255,0.8)]" />
+          <div className="h-2.5 w-2.5 rounded-full bg-[var(--accent)]" />
           {!collapsed ? (
-            <div>
-              <p className="app-title text-lg text-[var(--text)]">ShipTrack</p>
+            <div className="transition-opacity duration-200">
+              <p className="text-lg font-semibold text-[var(--text)]">ShipTrack</p>
               <p className="app-mono text-[10px] uppercase tracking-[0.18em] text-[var(--text-soft)]">Operations</p>
             </div>
           ) : null}
@@ -70,12 +70,12 @@ export function Sidebar({
               href={item.href}
               onClick={onCloseMobileNav}
               title={collapsed ? item.label : undefined}
-              className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition ${
+              className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition-all duration-200 ${
                 isActive
-                  ? "bg-[rgba(79,124,255,0.14)] text-[var(--accent)] shadow-[inset_0_0_0_1px_rgba(79,124,255,0.2)]"
+                  ? "bg-[rgba(59,110,246,0.09)] text-[var(--accent)] shadow-[inset_0_0_0_1px_rgba(59,110,246,0.16)]"
                   : isPrimary
-                    ? "bg-[rgba(79,124,255,0.1)] text-[var(--text)] hover:bg-[rgba(79,124,255,0.18)]"
-                    : "text-[var(--text-muted)] hover:bg-[var(--bg-4)] hover:text-[var(--text)]"
+                    ? "bg-[rgba(59,110,246,0.07)] text-[var(--text)] hover:bg-[rgba(59,110,246,0.12)]"
+                    : "text-[var(--text-muted)] hover:bg-[var(--bg-3)] hover:text-[var(--text)]"
               }`}
             >
               <item.icon className="h-4 w-4 shrink-0" />
@@ -92,7 +92,7 @@ export function Sidebar({
 
       <div className="border-t border-[var(--border)] p-3">
         <div className="mb-3 flex items-center gap-3 rounded-2xl bg-[var(--bg-3)] px-3 py-3">
-          <div className="rounded-full bg-[var(--bg-4)] p-2 text-[var(--text)]">
+          <div className="rounded-full bg-[var(--bg-2)] p-2 text-[var(--text)] ring-1 ring-[var(--border)]">
             <User2 className="h-4 w-4" />
           </div>
           {!collapsed ? (
@@ -107,7 +107,7 @@ export function Sidebar({
           <Button
             type="submit"
             variant="ghost"
-            className={`w-full justify-start ${collapsed ? "px-0" : ""}`}
+            className={`w-full justify-start shadow-none ${collapsed ? "px-0" : ""}`}
             icon={<LogOut className="h-4 w-4 shrink-0" />}
             title={collapsed ? "Logout" : undefined}
             ariaLabel="Logout"
@@ -122,7 +122,7 @@ export function Sidebar({
   return (
     <>
       <aside
-        className={`${collapsed ? "w-[88px]" : "w-[260px]"} hidden min-h-screen flex-col border-r border-[var(--border)] bg-[rgba(19,21,26,0.9)] backdrop-blur-xl lg:flex`}
+        className={`${collapsed ? "w-[88px]" : "w-[280px]"} sticky top-0 hidden h-screen shrink-0 flex-col border-r border-[var(--border)] bg-[rgba(255,255,255,0.9)] backdrop-blur-xl transition-[width] duration-200 ease-linear lg:flex`}
       >
         <div className="flex items-center justify-end px-3 pt-3">
           <Button
@@ -132,7 +132,8 @@ export function Sidebar({
             onClick={() => setCollapsed((value) => !value)}
             ariaLabel={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            icon={collapsed ? <PlusSquare className="h-4 w-4" /> : <Package className="h-4 w-4" />}
+            className="rounded-full border border-[var(--border-strong)] bg-[var(--bg-2)] shadow-none"
+            icon={collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           >
             <span className="sr-only">{collapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
           </Button>
@@ -141,17 +142,17 @@ export function Sidebar({
       </aside>
 
       {mobileNavOpen ? (
-        <div className="fixed inset-0 z-40 bg-[rgba(0,0,0,0.55)] backdrop-blur-sm lg:hidden" onClick={onCloseMobileNav}>
+        <div className="fixed inset-0 z-40 bg-[rgba(15,23,42,0.18)] backdrop-blur-sm lg:hidden" onClick={onCloseMobileNav}>
           <aside
             className="app-surface scrollbar-thin absolute inset-y-0 left-0 w-[86%] max-w-[320px] overflow-y-auto rounded-r-[28px]"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-4">
-              <p className="app-title text-xl text-[var(--text)]">ShipTrack</p>
+              <p className="text-xl font-semibold text-[var(--text)]">ShipTrack</p>
               <button
                 type="button"
                 onClick={onCloseMobileNav}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border-strong)] bg-[var(--bg-4)] text-[var(--text)]"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border-strong)] bg-[var(--bg-2)] text-[var(--text)]"
                 aria-label="Close navigation"
                 title="Close navigation"
               >
@@ -163,7 +164,7 @@ export function Sidebar({
         </div>
       ) : null}
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--border)] bg-[rgba(19,21,26,0.92)] px-2 py-2 backdrop-blur-xl lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--border)] bg-[rgba(255,255,255,0.96)] px-2 py-2 backdrop-blur-xl lg:hidden">
         <div className="grid grid-cols-4 gap-2">
           {navItems.slice(0, 4).map((item) => {
             const isActive = isItemActive(item.href);
@@ -173,7 +174,7 @@ export function Sidebar({
                 key={item.href}
                 href={item.href}
                 className={`flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[11px] ${
-                  isActive ? "text-[var(--accent)]" : "text-[var(--text-soft)]"
+                  isActive ? "bg-[rgba(59,110,246,0.08)] text-[var(--accent)]" : "text-[var(--text-soft)]"
                 }`}
               >
                 <item.icon className={`h-4 w-4 ${isActive ? "text-[var(--accent)]" : ""}`} />

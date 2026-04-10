@@ -32,7 +32,7 @@ export function EditTrackingItemForm({
         aria-label={isOpen ? "Cancel editing" : "Edit tracking item"}
         variant="secondary"
         size="icon"
-        className="h-10 w-10"
+        className="mx-auto h-10 w-10 rounded-2xl"
         icon={<Pencil className="h-4 w-4" />}
       >
         <span className="sr-only">{isOpen ? "Cancel editing" : "Edit tracking item"}</span>

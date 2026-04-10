@@ -1,7 +1,8 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { RecentShipments } from "@/components/dashboard/recent-shipments";
 import { StatsCard } from "@/components/dashboard/stats-card";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getCurrentUser } from "@/lib/get-current-user";
 import { createServiceRoleClient, getFriendlySupabaseErrorMessage } from "@/lib/supabase/server";
@@ -85,9 +86,9 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
           <p className="mt-2 text-sm text-slate-600">See shipment activity and recent updates for your organization.</p>
         </div>
-        <Link href="/shipments" className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800">
+        <Button href="/shipments">
           View Shipments
-        </Link>
+        </Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -97,20 +98,20 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.4fr_1fr]">
-        <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <Card className="p-6">
           <div className="mb-4">
             <h2 className="text-lg font-semibold text-slate-900">Status Breakdown</h2>
             <p className="mt-1 text-sm text-slate-600">Shipment counts grouped by their current status.</p>
           </div>
           <div className="space-y-3">
             {statusBreakdown.map((item) => (
-              <div key={item.status} className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+              <div key={item.status} className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--bg-3)] px-4 py-3">
                 <StatusBadge status={item.status} type="shipment" />
                 <span className="text-sm font-semibold text-slate-900">{item.count}</span>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
           <StatsCard label="Total Weight" value={totalWeight.toFixed(2)} helperText="Combined shipment weight" />

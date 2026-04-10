@@ -18,7 +18,7 @@ export function ShipmentTable({ shipments, showAction = true, emptyState }: Ship
     return (
       emptyState ?? (
         <Card className="p-10 text-center text-sm text-[var(--text-muted)]">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-4)] text-[var(--text-soft)]">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-3)] text-[var(--text-soft)]">
             <PackageSearch className="h-6 w-6" />
           </div>
           <p className="mt-4">No shipments yet. Create your first shipment to get started.</p>
@@ -43,14 +43,14 @@ export function ShipmentTable({ shipments, showAction = true, emptyState }: Ship
             <th className="px-5 py-4 app-mono text-[11px] font-medium uppercase tracking-[0.14em]">Status</th>
             <th className="px-5 py-4 app-mono text-[11px] font-medium uppercase tracking-[0.14em]">Total Weight</th>
             <th className="px-5 py-4 app-mono text-[11px] font-medium uppercase tracking-[0.14em]">Created Date</th>
-            {showAction ? <th className="px-5 py-4 text-right app-mono text-[11px] font-medium uppercase tracking-[0.14em]">Action</th> : null}
+            {showAction ? <th className="px-5 py-4 text-center app-mono text-[11px] font-medium uppercase tracking-[0.14em]">Action</th> : null}
           </tr>
         </thead>
-        <tbody className="divide-y divide-[var(--border)] bg-transparent text-[var(--text-muted)]">
+        <tbody className="divide-y divide-[var(--border)] bg-[var(--bg-2)] text-[var(--text-muted)]">
           {shipments.map((shipment, index) => (
             <tr
               key={shipment.id}
-              className={`${index % 2 === 0 ? "bg-transparent" : "bg-[rgba(255,255,255,0.015)]"} transition-colors hover:bg-[rgba(255,255,255,0.03)]`}
+              className={`${index % 2 === 0 ? "bg-[var(--bg-2)]" : "bg-[rgba(240,242,245,0.45)]"} transition-colors hover:bg-[rgba(59,110,246,0.04)]`}
             >
               <td className="px-5 py-4 font-medium text-[var(--text)]">{shipment.name}</td>
               <td className="px-5 py-4">
@@ -59,14 +59,14 @@ export function ShipmentTable({ shipments, showAction = true, emptyState }: Ship
               <td className="px-5 py-4">{shipment.total_weight ?? "-"}</td>
               <td className="px-5 py-4">{new Date(shipment.created_at).toLocaleDateString("en-IN")}</td>
               {showAction ? (
-                <td className="px-5 py-4 text-right">
+                <td className="px-5 py-4 text-center align-middle">
                   <Button
                     href={`/shipments/${shipment.id}`}
                     title="View Shipment"
                     ariaLabel="View Shipment"
                     variant="secondary"
                     size="icon"
-                    className="h-10 w-10"
+                    className="mx-auto h-10 w-10 rounded-2xl"
                     icon={<Eye className="h-4 w-4" />}
                   >
                     <span className="sr-only">View Shipment</span>

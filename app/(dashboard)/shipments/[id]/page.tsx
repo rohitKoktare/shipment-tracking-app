@@ -90,7 +90,7 @@ export default async function ShipmentDetailsPage({
         <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
           <div>
             <p className="app-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">Shipment Detail</p>
-            <h1 className="app-title mt-2 text-4xl text-[var(--text)]">{shipment.name}</h1>
+            <h1 className="mt-2 text-4xl font-semibold tracking-tight text-[var(--text)]">{shipment.name}</h1>
             <p className="mt-3 max-w-2xl text-sm text-[var(--text-muted)]">
               View shipment details, status, and tracking progress in a cleaner operational layout.
             </p>
@@ -204,19 +204,21 @@ export default async function ShipmentDetailsPage({
               </div>
 
               <div className="mt-4 space-y-4">
-                <div>
-                  <p className="mb-2 app-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Current Status</p>
-                  <StatusBadge status={item.status} type="tracking" />
-                </div>
-                <div>
-                  <p className="mb-2 app-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Change Status</p>
-                  <StatusSelectForm
-                    action={updateTrackingStatus}
-                    hiddenFields={{ shipment_id: shipment.id, tracking_item_id: item.id }}
-                    name="status"
-                    value={item.status}
-                    options={trackingStatuses}
-                  />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <p className="mb-2 app-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Current Status</p>
+                    <StatusBadge status={item.status} type="tracking" />
+                  </div>
+                  <div>
+                    <p className="mb-2 app-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Change Status</p>
+                    <StatusSelectForm
+                      action={updateTrackingStatus}
+                      hiddenFields={{ shipment_id: shipment.id, tracking_item_id: item.id }}
+                      name="status"
+                      value={item.status}
+                      options={trackingStatuses}
+                    />
+                  </div>
                 </div>
                 <div>
                   <p className="mb-2 app-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Confirmation</p>
@@ -266,19 +268,21 @@ export default async function ShipmentDetailsPage({
                   <div className="mt-1 text-xs text-[var(--text-muted)]">Cost: {item.cost ?? "-"}</div>
                 </td>
                 <td className="px-5 py-5">
-                  <div>
-                    <p className="mb-2 app-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Current</p>
-                    <StatusBadge status={item.status} type="tracking" />
-                  </div>
-                  <div className="mt-4">
-                    <p className="mb-2 app-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Change</p>
-                    <StatusSelectForm
-                      action={updateTrackingStatus}
-                      hiddenFields={{ shipment_id: shipment.id, tracking_item_id: item.id }}
-                      name="status"
-                      value={item.status}
-                      options={trackingStatuses}
-                    />
+                  <div className="grid gap-4 xl:grid-cols-2 xl:items-start">
+                    <div>
+                      <p className="mb-2 app-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Current</p>
+                      <StatusBadge status={item.status} type="tracking" />
+                    </div>
+                    <div>
+                      <p className="mb-2 app-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Change</p>
+                      <StatusSelectForm
+                        action={updateTrackingStatus}
+                        hiddenFields={{ shipment_id: shipment.id, tracking_item_id: item.id }}
+                        name="status"
+                        value={item.status}
+                        options={trackingStatuses}
+                      />
+                    </div>
                   </div>
                 </td>
                 <td className="px-5 py-5">
@@ -292,7 +296,7 @@ export default async function ShipmentDetailsPage({
                     isConfirmed={item.is_confirmed_by_agent}
                   />
                 </td>
-                <td className="px-5 py-5 text-right">
+                <td className="px-5 py-5 text-center align-top">
                   <EditTrackingItemForm
                     action={updateTrackingItem}
                     shipmentId={shipment.id}

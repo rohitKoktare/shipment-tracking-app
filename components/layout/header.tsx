@@ -2,15 +2,12 @@
 
 import { Menu, PlusSquare } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
 
 type HeaderProps = {
   onOpenMenu: () => void;
   canCreateShipment: boolean;
   userRole: string;
-  theme: "dark" | "light";
-  onThemeChange: (theme: "dark" | "light") => void;
 };
 
 const pageMeta: Record<string, { title: string; subtitle: string }> = {
@@ -43,17 +40,17 @@ function getPageMeta(pathname: string) {
   return pageMeta[pathname] ?? pageMeta["/dashboard"];
 }
 
-export function Header({ onOpenMenu, canCreateShipment, userRole, theme, onThemeChange }: HeaderProps) {
+export function Header({ onOpenMenu, canCreateShipment, userRole }: HeaderProps) {
   const pathname = usePathname();
   const meta = getPageMeta(pathname);
 
   return (
-    <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-[rgba(13,14,17,0.86)] backdrop-blur-xl">
-      <div className="flex items-center gap-3 px-4 py-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-[rgba(245,246,248,0.94)] backdrop-blur-xl">
+      <div className="flex min-h-14 items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
         <button
           type="button"
           onClick={onOpenMenu}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border-strong)] bg-[var(--bg-4)] text-[var(--text)] lg:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border-strong)] bg-[var(--bg-2)] text-[var(--text)] shadow-[0_1px_2px_rgba(15,23,42,0.05)] lg:hidden"
           aria-label="Open navigation"
           title="Open navigation"
         >
@@ -65,9 +62,6 @@ export function Header({ onOpenMenu, canCreateShipment, userRole, theme, onTheme
           </p>
           <h1 className="app-title truncate text-2xl text-[var(--text)] sm:text-3xl">{meta.title}</h1>
           <p className="mt-1 max-w-3xl text-sm text-[var(--text-muted)]">{meta.subtitle}</p>
-        </div>
-        <div className="ml-auto">
-          <ThemeToggle theme={theme} onChange={onThemeChange} />
         </div>
         {canCreateShipment ? (
           <div className="hidden md:block">

@@ -20,7 +20,7 @@ export function StatusSelectForm({
   options,
 }: StatusSelectFormProps) {
   return (
-    <form action={action} className="flex flex-col gap-2 sm:flex-row sm:items-center">
+    <form action={action} className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
       {Object.entries(hiddenFields).map(([key, hiddenValue]) => (
         <input key={key} type="hidden" name={key} value={hiddenValue} />
       ))}
@@ -38,12 +38,12 @@ export function StatusSelectForm({
       </Select>
       <LoadingButton
         variant="secondary"
-        size="sm"
+        size="default"
         loadingText="Updating..."
         icon={<Save className="h-4 w-4" />}
         title="Update selection"
         ariaLabel="Update selection"
-        className="min-w-28 inline-flex items-center gap-2"
+        className="min-w-[124px] justify-center"
       >
         Update
       </LoadingButton>

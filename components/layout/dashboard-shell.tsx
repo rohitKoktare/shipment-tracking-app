@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 
@@ -22,23 +22,6 @@ export function DashboardShell({
   logoutAction,
 }: DashboardShellProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [theme, setTheme] = useState<"dark" | "light">(() => {
-    if (typeof window === "undefined") {
-      return "dark";
-    }
-
-    const savedTheme = window.localStorage.getItem("shiptrack-theme");
-    return savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
-  });
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("shiptrack-theme", theme);
-  }, [theme]);
-
-  function handleThemeChange(nextTheme: "dark" | "light") {
-    setTheme(nextTheme);
-  }
 
   return (
     <div className="app-shell">
@@ -57,10 +40,8 @@ export function DashboardShell({
             onOpenMenu={() => setMobileNavOpen(true)}
             canCreateShipment={canCreateShipment}
             userRole={userRole}
-            theme={theme}
-            onThemeChange={handleThemeChange}
           />
-          <main className="app-grid min-h-[calc(100vh-96px)] px-4 pb-24 pt-6 sm:px-6 lg:px-8 lg:pb-8">
+          <main className="app-grid min-h-[calc(100vh-72px)] px-4 pb-24 pt-6 sm:px-6 lg:px-8 lg:pb-10">
             {children}
           </main>
         </div>

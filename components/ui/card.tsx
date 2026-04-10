@@ -1,8 +1,10 @@
+import { cn } from "@/lib/utils";
+
 type CardProps = {
   children: React.ReactNode;
   className?: string;
 };
 
 export function Card({ children, className = "" }: CardProps) {
-  return <div className={`app-surface rounded-[var(--radius-xl)] ${className}`.trim()}>{children}</div>;
+  return <div className={cn("app-surface rounded-2xl", className)}>{children}</div>;
 }

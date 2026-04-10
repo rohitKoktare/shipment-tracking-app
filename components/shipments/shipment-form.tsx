@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { PackagePlus } from "lucide-react";
 import { TrackingItemsForm } from "@/components/shipments/tracking-items-form";
+import { LoadingButton } from "@/components/ui/loading-button";
 
 type ShipmentFormProps = {
   action: (formData: FormData) => void | Promise<void>;
@@ -10,6 +12,7 @@ type ShipmentFormProps = {
 
 type TrackingItemValue = {
   tracking_id: string;
+  product_name: string;
   courier: string;
   weight: string;
   cost: string;
@@ -17,7 +20,7 @@ type TrackingItemValue = {
 
 export function ShipmentForm({ action, error }: ShipmentFormProps) {
   const [items, setItems] = useState<TrackingItemValue[]>([
-    { tracking_id: "", courier: "", weight: "", cost: "" },
+    { tracking_id: "", product_name: "", courier: "", weight: "", cost: "" },
   ]);
 
   return (
@@ -74,18 +77,16 @@ export function ShipmentForm({ action, error }: ShipmentFormProps) {
       {items.map((item, index) => (
         <div key={index} className="hidden">
           <input name={`tracking_items[${index}][tracking_id]`} value={item.tracking_id} readOnly />
+          <input name={`tracking_items[${index}][product_name]`} value={item.product_name} readOnly />
           <input name={`tracking_items[${index}][courier]`} value={item.courier} readOnly />
           <input name={`tracking_items[${index}][weight]`} value={item.weight} readOnly />
           <input name={`tracking_items[${index}][cost]`} value={item.cost} readOnly />
         </div>
       ))}
 
-      <button
-        type="submit"
-        className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
-      >
+      <LoadingButton loadingText="Creating..." icon={<PackagePlus className="h-4 w-4" />}>
         Create Shipment
-      </button>
+      </LoadingButton>
     </form>
   );
 }

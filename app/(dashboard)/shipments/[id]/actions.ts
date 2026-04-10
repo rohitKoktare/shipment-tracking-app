@@ -6,7 +6,7 @@ import { getCurrentUser } from "@/lib/get-current-user";
 import { createServiceRoleClient, getFriendlySupabaseErrorMessage } from "@/lib/supabase/server";
 
 const SHIPMENT_STATUSES = ["Created", "In Transit", "At China Airport", "Dispatched", "Delivered"] as const;
-const TRACKING_STATUSES = ["Received", "Processing", "Shipped", "Delivered"] as const;
+const TRACKING_STATUSES = ["Received", "Processing", "Shipped", "Delivered", "Not Delivered"] as const;
 
 function isShipmentStatus(status: string): status is (typeof SHIPMENT_STATUSES)[number] {
   return SHIPMENT_STATUSES.includes(status as (typeof SHIPMENT_STATUSES)[number]);
@@ -14,6 +14,15 @@ function isShipmentStatus(status: string): status is (typeof SHIPMENT_STATUSES)[
 
 function isTrackingStatus(status: string): status is (typeof TRACKING_STATUSES)[number] {
   return TRACKING_STATUSES.includes(status as (typeof TRACKING_STATUSES)[number]);
+}
+
+function parseOptionalNumber(value: FormDataEntryValue | null) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    return null;
+  }
+
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : Number.NaN;
 }
 
 export async function updateShipmentStatus(formData: FormData) {
@@ -111,5 +120,55 @@ export async function confirmTrackingItem(formData: FormData) {
     redirect(`/shipments/${shipmentId}?error=${encodeURIComponent(getFriendlySupabaseErrorMessage(error.message))}`);
   }
 
+  revalidatePath(`/shipments/${shipmentId}`);
+}
+
+export async function updateTrackingItem(formData: FormData) {
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser) {
+    redirect("/login");
+  }
+
+  const shipmentId = String(formData.get("shipment_id") ?? "");
+  const trackingItemId = String(formData.get("tracking_item_id") ?? "");
+  const trackingId = String(formData.get("tracking_id") ?? "").trim();
+  const productName = String(formData.get("product_name") ?? "").trim();
+  const courier = String(formData.get("courier") ?? "").trim();
+  const status = String(formData.get("status") ?? "");
+  const comment = String(formData.get("comment") ?? "").trim();
+  const weight = parseOptionalNumber(formData.get("weight"));
+  const cost = parseOptionalNumber(formData.get("cost"));
+
+  if (!shipmentId || !trackingItemId || !trackingId || !courier || !isTrackingStatus(status)) {
+    redirect(`/shipments/${shipmentId || ""}?error=Invalid tracking item details.`);
+  }
+
+  if (Number.isNaN(weight) || Number.isNaN(cost)) {
+    redirect(`/shipments/${shipmentId}?error=Weight and cost must be valid numbers.`);
+  }
+
+  const serviceRoleClient = createServiceRoleClient();
+  const { error } = await serviceRoleClient
+    .from("tracking_items")
+    .update({
+      tracking_id: trackingId,
+      product_name: productName || null,
+      courier,
+      weight,
+      cost,
+      status,
+      comment: comment || null,
+    })
+    .eq("id", trackingItemId)
+    .eq("shipment_id", shipmentId)
+    .eq("organization_id", currentUser.organization_id);
+
+  if (error) {
+    redirect(`/shipments/${shipmentId}?error=${encodeURIComponent(getFriendlySupabaseErrorMessage(error.message))}`);
+  }
+
+  revalidatePath("/shipments");
+  revalidatePath("/dashboard");
   revalidatePath(`/shipments/${shipmentId}`);
 }

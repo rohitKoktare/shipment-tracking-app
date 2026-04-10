@@ -117,10 +117,12 @@ export type Database = {
           shipment_id: string;
           organization_id: string;
           tracking_id: string;
+          product_name: string | null;
           courier: string;
           weight: number | null;
           cost: number | null;
           status: string;
+          comment: string | null;
           is_confirmed_by_agent: boolean;
           confirmed_at: string | null;
           created_at: string;
@@ -130,10 +132,12 @@ export type Database = {
           shipment_id: string;
           organization_id: string;
           tracking_id: string;
+          product_name?: string | null;
           courier: string;
           weight?: number | null;
           cost?: number | null;
           status?: string;
+          comment?: string | null;
           is_confirmed_by_agent?: boolean;
           confirmed_at?: string | null;
           created_at?: string;
@@ -143,10 +147,12 @@ export type Database = {
           shipment_id?: string;
           organization_id?: string;
           tracking_id?: string;
+          product_name?: string | null;
           courier?: string;
           weight?: number | null;
           cost?: number | null;
           status?: string;
+          comment?: string | null;
           is_confirmed_by_agent?: boolean;
           confirmed_at?: string | null;
           created_at?: string;

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { Sidebar } from "@/components/layout/sidebar";
+import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { getCurrentUser } from "@/lib/get-current-user";
 import { logout } from "./actions";
 
@@ -15,15 +15,14 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      <Sidebar
-        userName={currentUser.name ?? currentUser.email}
-        userRole={currentUser.role === "admin" ? "Admin" : "Agent"}
-        canCreateShipment={currentUser.role === "admin"}
-        canManageUsers={currentUser.role === "admin"}
-        logoutAction={logout}
-      />
-      <main className="min-w-0 flex-1 p-6 md:p-8">{children}</main>
-    </div>
+    <DashboardShell
+      userName={currentUser.name ?? currentUser.email}
+      userRole={currentUser.role === "admin" ? "Admin" : "Agent"}
+      canCreateShipment={currentUser.role === "admin"}
+      canManageUsers={currentUser.role === "admin"}
+      logoutAction={logout}
+    >
+      {children}
+    </DashboardShell>
   );
 }

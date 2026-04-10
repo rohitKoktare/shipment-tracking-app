@@ -2,6 +2,7 @@
 
 import { Download } from "lucide-react";
 import * as XLSX from "xlsx";
+import { Button } from "@/components/ui/button";
 import type { Database } from "@/types/database.types";
 
 type ShipmentRow = Database["public"]["Tables"]["shipments"]["Row"];
@@ -28,13 +29,8 @@ export function ExportShipmentsButton({ shipments }: ExportShipmentsButtonProps)
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleExport}
-      className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-    >
-      <Download className="h-4 w-4" />
+    <Button type="button" onClick={handleExport} variant="secondary" icon={<Download className="h-4 w-4" />}>
       Export Excel
-    </button>
+    </Button>
   );
 }

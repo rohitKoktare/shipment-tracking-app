@@ -39,15 +39,23 @@ create table if not exists public.tracking_items (
   shipment_id uuid not null references public.shipments (id) on delete cascade,
   organization_id uuid not null references public.organizations (id) on delete cascade,
   tracking_id text not null,
+  product_name text,
   courier text not null,
   weight numeric(12, 2),
   cost numeric(12, 2),
   status text not null default 'pending',
+  comment text,
   is_confirmed_by_agent boolean not null default false,
   confirmed_at timestamptz,
   created_at timestamptz not null default timezone('utc', now()),
   unique (organization_id, tracking_id)
 );
+
+alter table public.tracking_items
+  add column if not exists product_name text;
+
+alter table public.tracking_items
+  add column if not exists comment text;
 
 create index if not exists idx_users_organization_id on public.users (organization_id);
 create index if not exists idx_shipments_organization_id on public.shipments (organization_id);

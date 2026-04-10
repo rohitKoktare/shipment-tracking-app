@@ -1,5 +1,9 @@
 "use client";
 
+import { Save } from "lucide-react";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { Select } from "@/components/ui/input";
+
 type StatusSelectFormProps = {
   action: (formData: FormData) => void | Promise<void>;
   hiddenFields: Record<string, string>;
@@ -16,15 +20,14 @@ export function StatusSelectForm({
   options,
 }: StatusSelectFormProps) {
   return (
-    <form action={action}>
+    <form action={action} className="flex flex-col gap-2 sm:flex-row sm:items-center">
       {Object.entries(hiddenFields).map(([key, hiddenValue]) => (
         <input key={key} type="hidden" name={key} value={hiddenValue} />
       ))}
-      <select
+      <Select
         name={name}
         defaultValue={value}
-        onChange={(event) => event.currentTarget.form?.requestSubmit()}
-        className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-slate-500 hover:border-slate-400"
+        className="min-w-40"
         aria-label="Update selection"
       >
         {options.map((option) => (
@@ -32,7 +35,18 @@ export function StatusSelectForm({
             {option}
           </option>
         ))}
-      </select>
+      </Select>
+      <LoadingButton
+        variant="secondary"
+        size="sm"
+        loadingText="Updating..."
+        icon={<Save className="h-4 w-4" />}
+        title="Update selection"
+        ariaLabel="Update selection"
+        className="min-w-28 inline-flex items-center gap-2"
+      >
+        Update
+      </LoadingButton>
     </form>
   );
 }

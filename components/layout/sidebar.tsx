@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, LogOut, Package, PanelLeftClose, PanelLeftOpen, PlusSquare, User2, Users } from "lucide-react";
+import { LayoutDashboard, LogOut, Package, PlusSquare, User2, Users, X } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 type SidebarProps = {
   userName: string;
@@ -11,6 +12,8 @@ type SidebarProps = {
   canCreateShipment: boolean;
   canManageUsers: boolean;
   logoutAction: () => void | Promise<void>;
+  mobileNavOpen: boolean;
+  onCloseMobileNav: () => void;
 };
 
 type NavItem = {
@@ -25,6 +28,8 @@ export function Sidebar({
   canCreateShipment,
   canManageUsers,
   logoutAction,
+  mobileNavOpen,
+  onCloseMobileNav,
 }: SidebarProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
@@ -36,73 +41,148 @@ export function Sidebar({
     ...(canManageUsers ? [{ href: "/users", label: "Users", icon: Users }] : []),
   ];
 
-  return (
-    <aside
-      className={`${collapsed ? "w-[72px]" : "w-[240px]"} flex min-h-screen flex-col border-r border-slate-200 bg-white transition-all`}
-    >
-      <div className="flex items-center justify-between border-b border-slate-200 px-4 py-4">
-        {!collapsed ? <span className="text-sm font-semibold text-slate-900">Shipment Tracker</span> : null}
-        <button
-          type="button"
-          onClick={() => setCollapsed((value) => !value)}
-          className="rounded-lg border border-slate-300 p-2 text-slate-700 transition hover:bg-slate-50"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-        </button>
+  function isItemActive(href: string) {
+    return pathname === href || (href !== "/dashboard" && href !== "/shipments/create" && pathname.startsWith(href));
+  }
+
+  const navContent = (
+    <>
+      <div className="border-b border-[var(--border)] px-4 py-5">
+        <div className="flex items-center gap-3">
+          <div className="h-3 w-3 rounded-full bg-[var(--accent)] shadow-[0_0_18px_rgba(79,124,255,0.8)]" />
+          {!collapsed ? (
+            <div>
+              <p className="app-title text-lg text-[var(--text)]">ShipTrack</p>
+              <p className="app-mono text-[10px] uppercase tracking-[0.18em] text-[var(--text-soft)]">Operations</p>
+            </div>
+          ) : null}
+        </div>
       </div>
 
-      <nav className="flex-1 space-y-2 px-3 py-4">
+      <nav className="flex-1 space-y-2 px-3 py-5">
         {navItems.map((item) => {
-          const isActive =
-            pathname === item.href || (item.href !== "/dashboard" && item.href !== "/shipments/create" && pathname.startsWith(item.href));
+          const isActive = isItemActive(item.href);
           const isPrimary = item.href === "/shipments/create";
 
           return (
             <Link
               key={item.href}
               href={item.href}
+              onClick={onCloseMobileNav}
               title={collapsed ? item.label : undefined}
-              className={`relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+              className={`flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition ${
                 isActive
-                  ? "border-l-4 border-slate-900 bg-slate-900 text-white"
+                  ? "bg-[rgba(79,124,255,0.14)] text-[var(--accent)] shadow-[inset_0_0_0_1px_rgba(79,124,255,0.2)]"
                   : isPrimary
-                    ? "bg-blue-50 text-blue-700 hover:bg-blue-100"
-                    : "text-slate-700 hover:bg-slate-100"
+                    ? "bg-[rgba(79,124,255,0.1)] text-[var(--text)] hover:bg-[rgba(79,124,255,0.18)]"
+                    : "text-[var(--text-muted)] hover:bg-[var(--bg-4)] hover:text-[var(--text)]"
               }`}
             >
               <item.icon className="h-4 w-4 shrink-0" />
               {!collapsed ? <span>{item.label}</span> : null}
+              {!collapsed && (item.href === "/shipments/create" || item.href === "/users") ? (
+                <span className="ml-auto app-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">
+                  {item.href === "/users" ? "admin" : "quick"}
+                </span>
+              ) : null}
             </Link>
           );
         })}
       </nav>
 
-      <div className="border-t border-slate-200 p-3">
-        <div className="mb-3 flex items-center gap-3 rounded-xl bg-slate-50 px-3 py-3">
-          <div className="rounded-full bg-slate-200 p-2 text-slate-700">
+      <div className="border-t border-[var(--border)] p-3">
+        <div className="mb-3 flex items-center gap-3 rounded-2xl bg-[var(--bg-3)] px-3 py-3">
+          <div className="rounded-full bg-[var(--bg-4)] p-2 text-[var(--text)]">
             <User2 className="h-4 w-4" />
           </div>
           {!collapsed ? (
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-slate-900">{userName}</p>
-              <p className="text-xs text-slate-600">{userRole}</p>
+              <p className="truncate text-sm font-medium text-[var(--text)]">{userName}</p>
+              <p className="text-xs text-[var(--text-muted)]">{userRole}</p>
             </div>
           ) : null}
         </div>
 
         <form action={logoutAction}>
-          <button
+          <Button
             type="submit"
+            variant="ghost"
+            className={`w-full justify-start ${collapsed ? "px-0" : ""}`}
+            icon={<LogOut className="h-4 w-4 shrink-0" />}
             title={collapsed ? "Logout" : undefined}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+            ariaLabel="Logout"
           >
-            <LogOut className="h-4 w-4 shrink-0" />
-            {!collapsed ? <span>Logout</span> : null}
-          </button>
+            {!collapsed ? "Logout" : ""}
+          </Button>
         </form>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      <aside
+        className={`${collapsed ? "w-[88px]" : "w-[260px]"} hidden min-h-screen flex-col border-r border-[var(--border)] bg-[rgba(19,21,26,0.9)] backdrop-blur-xl lg:flex`}
+      >
+        <div className="flex items-center justify-end px-3 pt-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
+            onClick={() => setCollapsed((value) => !value)}
+            ariaLabel={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            icon={collapsed ? <PlusSquare className="h-4 w-4" /> : <Package className="h-4 w-4" />}
+          >
+            <span className="sr-only">{collapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
+          </Button>
+        </div>
+        {navContent}
+      </aside>
+
+      {mobileNavOpen ? (
+        <div className="fixed inset-0 z-40 bg-[rgba(0,0,0,0.55)] backdrop-blur-sm lg:hidden" onClick={onCloseMobileNav}>
+          <aside
+            className="app-surface scrollbar-thin absolute inset-y-0 left-0 w-[86%] max-w-[320px] overflow-y-auto rounded-r-[28px]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-4">
+              <p className="app-title text-xl text-[var(--text)]">ShipTrack</p>
+              <button
+                type="button"
+                onClick={onCloseMobileNav}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border-strong)] bg-[var(--bg-4)] text-[var(--text)]"
+                aria-label="Close navigation"
+                title="Close navigation"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex min-h-[calc(100vh-72px)] flex-col">{navContent}</div>
+          </aside>
+        </div>
+      ) : null}
+
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--border)] bg-[rgba(19,21,26,0.92)] px-2 py-2 backdrop-blur-xl lg:hidden">
+        <div className="grid grid-cols-4 gap-2">
+          {navItems.slice(0, 4).map((item) => {
+            const isActive = isItemActive(item.href);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[11px] ${
+                  isActive ? "text-[var(--accent)]" : "text-[var(--text-soft)]"
+                }`}
+              >
+                <item.icon className={`h-4 w-4 ${isActive ? "text-[var(--accent)]" : ""}`} />
+                <span>{item.label.split(" ")[0]}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </>
   );
 }

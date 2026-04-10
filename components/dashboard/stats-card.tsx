@@ -1,3 +1,5 @@
+import { Card } from "@/components/ui/card";
+
 type StatsCardProps = {
   label: string;
   value: number | string;
@@ -6,10 +8,10 @@ type StatsCardProps = {
 
 export function StatsCard({ label, value, helperText }: StatsCardProps) {
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 transition hover:shadow-md">
-      <p className="text-sm text-slate-600">{label}</p>
-      <p className="mt-2 text-3xl font-semibold text-slate-900">{value}</p>
-      {helperText ? <p className="mt-2 text-xs text-slate-500">{helperText}</p> : null}
-    </div>
+    <Card className="p-6 transition hover:-translate-y-0.5">
+      <p className="app-mono text-[11px] uppercase tracking-[0.14em] text-[var(--text-soft)]">{label}</p>
+      <p className="mt-3 text-3xl font-semibold text-[var(--text)]">{value}</p>
+      {helperText ? <p className="mt-2 text-xs text-[var(--text-muted)]">{helperText}</p> : null}
+    </Card>
   );
 }

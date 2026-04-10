@@ -1,7 +1,10 @@
-import Link from "next/link";
+import { PackagePlus, PackageSearch } from "lucide-react";
 import { redirect } from "next/navigation";
 import { ExportShipmentsButton } from "@/components/shipments/export-shipments-button";
 import { ShipmentTable } from "@/components/shipments/shipment-table";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input, Select } from "@/components/ui/input";
 import { getCurrentUser } from "@/lib/get-current-user";
 import { createServiceRoleClient, getFriendlySupabaseErrorMessage } from "@/lib/supabase/server";
 
@@ -67,113 +70,122 @@ export default async function ShipmentsPage({
 
   return (
     <section className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Shipments</h1>
-          <p className="mt-2 text-sm text-slate-600">Manage all your shipments from one place.</p>
+          <p className="app-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">Shipment Control</p>
+          <h1 className="app-title text-4xl text-[var(--text)]">Track Every Shipment</h1>
+          <p className="mt-2 max-w-2xl text-sm text-[var(--text-muted)]">
+            Review shipment flow, filter by status or date, and jump into operational details without leaving this workspace.
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <ExportShipmentsButton shipments={shipments ?? []} />
           {currentUser.role === "admin" ? (
-            <Link href="/shipments/create" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
+            <Button href="/shipments/create" icon={<PackagePlus className="h-4 w-4" />}>
               Create Shipment
-            </Link>
+            </Button>
           ) : null}
         </div>
       </div>
 
-      <form method="GET" className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+      <Card className="p-5 sm:p-6">
+        <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="app-mono text-[11px] uppercase tracking-[0.16em] text-[var(--text-soft)]">Filter Console</p>
+            <h2 className="mt-1 text-lg font-semibold text-[var(--text)]">Search and narrow shipment activity</h2>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {shipmentStatuses.map((option) => (
+              <span
+                key={option}
+                className={`rounded-full border px-3 py-1 text-xs ${
+                  (status || "All") === option
+                    ? "border-[rgba(79,124,255,0.2)] bg-[rgba(79,124,255,0.12)] text-[var(--accent)]"
+                    : "border-[var(--border)] text-[var(--text-soft)]"
+                }`}
+              >
+                {option}
+              </span>
+            ))}
+          </div>
+        </div>
+        <form method="GET">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           <div className="xl:col-span-2">
-            <label htmlFor="search" className="mb-1 block text-sm font-medium text-slate-700">
-              Search shipments
-            </label>
-            <input
+            <Input
               id="search"
+              label="Search shipments"
               name="search"
               defaultValue={search}
               placeholder="Search by shipment name"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500"
             />
           </div>
           <div>
-            <label htmlFor="status" className="mb-1 block text-sm font-medium text-slate-700">
-              Filter by status
-            </label>
-            <select
+            <Select
               id="status"
+              label="Filter by status"
               name="status"
               defaultValue={status || "All"}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 outline-none transition focus:border-slate-500"
             >
               {shipmentStatuses.map((option) => (
                 <option key={option} value={option}>
                   {option}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
           <div>
-            <label htmlFor="from" className="mb-1 block text-sm font-medium text-slate-700">
-              From date
-            </label>
-            <input
+            <Input
               id="from"
+              label="From date"
               name="from"
               type="date"
               defaultValue={from}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500"
             />
           </div>
           <div>
-            <label htmlFor="to" className="mb-1 block text-sm font-medium text-slate-700">
-              To date
-            </label>
-            <input
+            <Input
               id="to"
+              label="To date"
               name="to"
               type="date"
               defaultValue={to}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none transition focus:border-slate-500"
             />
           </div>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-3">
-          <button
-            type="submit"
-            className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
-          >
+          <Button type="submit">
             Apply Filters
-          </button>
-          <Link
-            href="/shipments"
-            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-          >
+          </Button>
+          <Button href="/shipments" variant="secondary">
             Clear Filters
-          </Link>
+          </Button>
         </div>
-      </form>
+        </form>
+      </Card>
 
       <ShipmentTable
         shipments={shipments ?? []}
         emptyState={
-          <div className="rounded-2xl bg-white p-10 text-center shadow-sm ring-1 ring-slate-200">
-            <h2 className="text-lg font-semibold text-slate-900">No shipments found</h2>
-            <p className="mt-2 text-sm text-slate-600">
+          <Card className="p-10 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-4)] text-[var(--text-soft)]">
+              <PackageSearch className="h-6 w-6" />
+            </div>
+            <h2 className="mt-4 text-lg font-semibold text-[var(--text)]">No shipments found</h2>
+            <p className="mt-2 text-sm text-[var(--text-muted)]">
               {search || (status && status !== "All") || from || to
                 ? "Try adjusting your search or filters."
                 : "Create your first shipment to start tracking activity."}
             </p>
             {currentUser.role === "admin" ? (
-              <Link
-                href="/shipments/create"
-                className="mt-5 inline-flex rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
-              >
+              <div className="mt-5">
+              <Button href="/shipments/create" icon={<PackagePlus className="h-4 w-4" />}>
                 Create your first shipment
-              </Link>
+              </Button>
+              </div>
             ) : null}
-          </div>
+          </Card>
         }
       />
     </section>

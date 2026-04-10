@@ -3,6 +3,7 @@
 import { Download, FileSpreadsheet } from "lucide-react";
 import { jsPDF } from "jspdf";
 import * as XLSX from "xlsx";
+import { Button } from "@/components/ui/button";
 import type { Database } from "@/types/database.types";
 
 type ShipmentRow = Database["public"]["Tables"]["shipments"]["Row"];
@@ -31,10 +32,12 @@ export function ExportShipmentButtons({
     const trackingItemsSheet = XLSX.utils.json_to_sheet(
       trackingItems.map((item) => ({
         "Tracking ID": item.tracking_id,
+        "Product Name": item.product_name ?? "",
         Courier: item.courier,
         Weight: item.weight ?? "",
         Cost: item.cost ?? "",
         Status: item.status,
+        Comment: item.comment ?? "",
         Confirmed: item.is_confirmed_by_agent ? "Yes" : "No",
       })),
     );
@@ -79,9 +82,13 @@ export function ExportShipmentButtons({
 
         pdf.text(`${index + 1}. Tracking ID: ${item.tracking_id}`, 14, y);
         y += 7;
+        pdf.text(`Product: ${item.product_name ?? "-"}`, 20, y);
+        y += 7;
         pdf.text(`Courier: ${item.courier}`, 20, y);
         y += 7;
-        pdf.text(`Weight: ${item.weight ?? "-"} | Status: ${item.status}`, 20, y);
+        pdf.text(`Weight: ${item.weight ?? "-"} | Cost: ${item.cost ?? "-"} | Status: ${item.status}`, 20, y);
+        y += 7;
+        pdf.text(`Comment: ${item.comment ?? "-"}`, 20, y);
         y += 7;
         pdf.text(`Confirmed: ${item.is_confirmed_by_agent ? "Yes" : "No"}`, 20, y);
         y += 10;
@@ -93,22 +100,12 @@ export function ExportShipmentButtons({
 
   return (
     <div className="flex flex-wrap gap-3">
-      <button
-        type="button"
-        onClick={exportExcel}
-        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-      >
-        <FileSpreadsheet className="h-4 w-4" />
+      <Button type="button" onClick={exportExcel} variant="secondary" icon={<FileSpreadsheet className="h-4 w-4" />}>
         Export Excel
-      </button>
-      <button
-        type="button"
-        onClick={exportPdf}
-        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-      >
-        <Download className="h-4 w-4" />
+      </Button>
+      <Button type="button" onClick={exportPdf} variant="secondary" icon={<Download className="h-4 w-4" />}>
         Export PDF
-      </button>
+      </Button>
     </div>
   );
 }

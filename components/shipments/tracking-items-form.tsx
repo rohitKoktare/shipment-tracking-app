@@ -2,6 +2,7 @@
 
 type TrackingItemValue = {
   tracking_id: string;
+  product_name: string;
   courier: string;
   weight: string;
   cost: string;
@@ -20,7 +21,7 @@ export function TrackingItemsForm({ items, setItems }: TrackingItemsFormProps) {
   }
 
   function addItem() {
-    setItems((current) => [...current, { tracking_id: "", courier: "", weight: "", cost: "" }]);
+    setItems((current) => [...current, { tracking_id: "", product_name: "", courier: "", weight: "", cost: "" }]);
   }
 
   function removeItem(index: number) {
@@ -40,7 +41,7 @@ export function TrackingItemsForm({ items, setItems }: TrackingItemsFormProps) {
         </button>
       </div>
       {items.map((item, index) => (
-        <div key={index} className="grid gap-4 rounded-xl border border-slate-200 p-4 md:grid-cols-4">
+        <div key={index} className="grid gap-4 rounded-xl border border-slate-200 p-4 md:grid-cols-5">
           <div>
             <label className="mb-1 block text-sm font-medium text-slate-700">Tracking ID</label>
             <input
@@ -48,6 +49,16 @@ export function TrackingItemsForm({ items, setItems }: TrackingItemsFormProps) {
               value={item.tracking_id}
               onChange={(event) => updateItem(index, "tracking_id", event.target.value)}
               required
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-slate-700">Product Name</label>
+            <input
+              name="product_name"
+              value={item.product_name}
+              onChange={(event) => updateItem(index, "product_name", event.target.value)}
+              placeholder="Optional"
               className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
             />
           </div>

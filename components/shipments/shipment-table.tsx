@@ -1,4 +1,7 @@
-import Link from "next/link";
+import { Eye, PackageSearch } from "lucide-react";
+import { ShipmentCard } from "@/components/shipments/shipment-card";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import type { Database } from "@/types/database.types";
 
@@ -14,51 +17,67 @@ export function ShipmentTable({ shipments, showAction = true, emptyState }: Ship
   if (shipments.length === 0) {
     return (
       emptyState ?? (
-        <div className="rounded-2xl bg-white p-8 text-sm text-slate-600 shadow-sm ring-1 ring-slate-200">
-          No shipments yet. Create your first shipment to get started.
-        </div>
+        <Card className="p-10 text-center text-sm text-[var(--text-muted)]">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--bg-4)] text-[var(--text-soft)]">
+            <PackageSearch className="h-6 w-6" />
+          </div>
+          <p className="mt-4">No shipments yet. Create your first shipment to get started.</p>
+        </Card>
       )
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-      <table className="min-w-full divide-y divide-slate-200 text-sm">
-        <thead className="bg-slate-100/80 text-left text-slate-600">
+    <>
+      <div className="grid gap-4 md:hidden">
+        {shipments.map((shipment) => (
+          <ShipmentCard key={shipment.id} shipment={shipment} showAction={showAction} />
+        ))}
+      </div>
+
+      <Card className="hidden overflow-hidden md:block">
+      <table className="min-w-full divide-y divide-[var(--border)] text-sm">
+        <thead className="bg-[var(--bg-3)] text-left text-[var(--text-muted)]">
           <tr>
-            <th className="px-5 py-3.5 font-semibold">Shipment Name</th>
-            <th className="px-5 py-3.5 font-semibold">Status</th>
-            <th className="px-5 py-3.5 font-semibold">Total Weight</th>
-            <th className="px-5 py-3.5 font-semibold">Created Date</th>
-            {showAction ? <th className="px-5 py-3.5 font-semibold">Action</th> : null}
+            <th className="px-5 py-4 app-mono text-[11px] font-medium uppercase tracking-[0.14em]">Shipment Name</th>
+            <th className="px-5 py-4 app-mono text-[11px] font-medium uppercase tracking-[0.14em]">Status</th>
+            <th className="px-5 py-4 app-mono text-[11px] font-medium uppercase tracking-[0.14em]">Total Weight</th>
+            <th className="px-5 py-4 app-mono text-[11px] font-medium uppercase tracking-[0.14em]">Created Date</th>
+            {showAction ? <th className="px-5 py-4 text-right app-mono text-[11px] font-medium uppercase tracking-[0.14em]">Action</th> : null}
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-200 bg-white text-slate-700">
+        <tbody className="divide-y divide-[var(--border)] bg-transparent text-[var(--text-muted)]">
           {shipments.map((shipment, index) => (
             <tr
               key={shipment.id}
-              className={`${index % 2 === 0 ? "bg-white" : "bg-slate-50/50"} transition-colors hover:bg-slate-100/70`}
+              className={`${index % 2 === 0 ? "bg-transparent" : "bg-[rgba(255,255,255,0.015)]"} transition-colors hover:bg-[rgba(255,255,255,0.03)]`}
             >
-              <td className="px-5 py-4">{shipment.name}</td>
+              <td className="px-5 py-4 font-medium text-[var(--text)]">{shipment.name}</td>
               <td className="px-5 py-4">
                 <StatusBadge status={shipment.status} type="shipment" />
               </td>
               <td className="px-5 py-4">{shipment.total_weight ?? "-"}</td>
               <td className="px-5 py-4">{new Date(shipment.created_at).toLocaleDateString("en-IN")}</td>
               {showAction ? (
-                <td className="px-5 py-4">
-                  <Link
+                <td className="px-5 py-4 text-right">
+                  <Button
                     href={`/shipments/${shipment.id}`}
-                    className="font-medium text-slate-900 underline-offset-4 transition hover:underline"
+                    title="View Shipment"
+                    ariaLabel="View Shipment"
+                    variant="secondary"
+                    size="icon"
+                    className="h-10 w-10"
+                    icon={<Eye className="h-4 w-4" />}
                   >
-                    View
-                  </Link>
+                    <span className="sr-only">View Shipment</span>
+                  </Button>
                 </td>
               ) : null}
             </tr>
           ))}
         </tbody>
       </table>
-    </div>
+      </Card>
+    </>
   );
 }

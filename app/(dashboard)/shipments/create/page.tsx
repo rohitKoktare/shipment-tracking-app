@@ -12,6 +12,7 @@ const shipmentSchema = z.object({
 
 const trackingItemSchema = z.object({
   tracking_id: z.string().trim().min(1, "Tracking ID is required."),
+  product_name: z.string().trim().optional(),
   courier: z.string().trim().min(1, "Courier is required."),
   weight: z.string().optional(),
   cost: z.string().optional(),
@@ -34,7 +35,7 @@ function extractTrackingItems(formData: FormData) {
       continue;
     }
 
-    const match = key.match(/^tracking_items\[(\d+)\]\[(tracking_id|courier|weight|cost)\]$/);
+    const match = key.match(/^tracking_items\[(\d+)\]\[(tracking_id|product_name|courier|weight|cost)\]$/);
 
     if (!match) {
       continue;
@@ -141,6 +142,7 @@ export default async function CreateShipmentPage({
         shipment_id: shipment.id,
         organization_id: currentUser.organization_id,
         tracking_id: item?.tracking_id ?? "",
+        product_name: item?.product_name || null,
         courier: item?.courier ?? "",
         weight: parseNumber(item?.weight),
         cost: parseNumber(item?.cost),

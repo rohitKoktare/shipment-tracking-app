@@ -1,3 +1,6 @@
+import { UserPlus } from "lucide-react";
+import { LoadingButton } from "@/components/ui/loading-button";
+
 type AddUserFormProps = {
   action: (formData: FormData) => void | Promise<void>;
 };
@@ -50,12 +53,14 @@ export function AddUserForm({ action }: AddUserFormProps) {
         </div>
       </div>
 
-      <button
-        type="submit"
-        className="mt-5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
-      >
-        Invite User
-      </button>
+      <div className="mt-5">
+        <LoadingButton
+          loadingText="Sending Invite..."
+          icon={<UserPlus className="h-4 w-4" />}
+        >
+          Invite User
+        </LoadingButton>
+      </div>
     </form>
   );
 }
